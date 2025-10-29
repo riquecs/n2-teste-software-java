@@ -7,6 +7,11 @@ public class CarrinhoService {
 
     public double calcularTotal(Carrinho carrinho) {
 
+        //Adicionamos esta verificação de argumento inválido
+        if (carrinho == null) {
+            throw new IllegalArgumentException("Carrinho não pode ser nulo");
+        }
+
         double totalBruto = 0.0;
         for (Produto p : carrinho.getItens()) {
             totalBruto += p.getPreco();
