@@ -5,6 +5,14 @@ public class CarrinhoService {
     private static final int MIN_ITENS_PARA_PROMOCAO = 3;
     private static final double PERCENTUAL_DESCONTO_PROMOCAO = 0.10; // 10%
 
+    private final EstoqueRepository estoqueRepository;
+    private final FreteAPI freteAPI;
+
+    public CarrinhoService(EstoqueRepository estoqueRepository, FreteAPI freteAPI) {
+        this.estoqueRepository = estoqueRepository;
+        this.freteAPI = freteAPI;
+    }
+
     public double calcularTotal(Carrinho carrinho) {
 
         //Adicionamos esta verificação de argumento inválido
