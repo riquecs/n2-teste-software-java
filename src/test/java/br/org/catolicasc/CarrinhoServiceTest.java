@@ -108,4 +108,34 @@ public class CarrinhoServiceTest {
         //Verifica que o 'reservar' nunca foi chamado
         verify(estoqueRepositoryMock, never()).reservar(any(), anyInt());
     }
+
+    @Test
+    void deveFecharCompra_UsandoUmStubDeEstoqueEmMemoria() {
+        // ão usamos @Mock, criamos uma instância real do Stub
+        InMemoryEstoqueRepository estoqueStub = new InMemoryEstoqueRepository();
+
+        //Criamos o service injetando o Stub e um Mock para o frete
+        CarrinhoService serviceComStub = new CarrinhoService(estoqueStub, freteAPIMock);
+
+        //Prepara os dados no Stub
+        Produto p1 = new Produto("Produto A", 100.0);
+        estoqueStub.adicionarProduto(p1, 20); // Coloca 20 itens no 'banco de dados'
+
+        Carrinho carrinho = new Carrinho();
+        carrinho.adicionarItem(p1);
+        String cep = "89250-000";
+
+        //Configura o mock do Frete
+        when(freteAPIMock.calcularFrete(cep)).thenReturn(10.0);
+
+        Pedido pedido = serviceComStub.fecharCompra(carrinho, cep);
+
+        assertNotNull(pedido);
+        assertEquals(100.0, pedido.getSubtotal());
+        assertEquals(10.0, pedido.getFrete());
+        assertEquals(110.0, pedido.getTotalFinal());
+
+        //O estoque de p1 deve ter diminuído de 20 para 19.
+        assertEquals(19, estoqueStub.getQuantidade(p1));
+    }
 }
