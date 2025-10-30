@@ -1,0 +1,35 @@
+#Nome do pipeline
+name: ci
+
+#Em quais eventos do GitHub ele deve rodar
+on: [push, pull_request]
+
+jobs:
+  #Nome do "job" (trabalho)
+  build-java:
+    #Máquina virtual que vai rodar o código
+    runs-on: ubuntu-latest
+
+    steps:
+      #1. Baixa o código (checkout)
+      - uses: actions/checkout@v4
+
+      #2. Configura o Java (JDK 21)
+      - name: Setup Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      #3. Roda o Maven (testes + cobertura JaCoCo)
+      - name: Run Maven Verify (Tests + Coverage)
+        #Usamos 'verify' para rodar os testes e o 'report' do JaCoCo
+        run: mvn -B verify
+
+      #4. Salva o relatório de cobertura como um 'artefato'
+      - name: Upload JaCoCo coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-java
+          #O caminho que o JaCoCo gera o relatório
+          path: target/site/jacoco
