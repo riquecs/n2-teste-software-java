@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @ExtendWith(MockitoExtension.class)
 public class CarrinhoServiceTest {
 
@@ -50,5 +53,36 @@ public class CarrinhoServiceTest {
         }
         double totalCalculado = service.calcularTotal(carrinho);
         assertEquals(totalEsperado, totalCalculado, 0.001);
+    }
+
+    @Test
+    void deveFecharCompraComSucessoSeTiverEstoqueECalcularFrete() {
+        //Configura os produtos e o carrinho
+        Produto p1 = new Produto("Produto A", 100.0);
+        Produto p2 = new Produto("Produto B", 100.0);
+        Carrinho carrinho = new Carrinho();
+        carrinho.adicionarItem(p1);
+        carrinho.adicionarItem(p2); //2 itens = R$ 200.0 (sem promoção)
+
+        String cep = "89250-000";
+
+        //Dizemos ao mock do Estoque para fingir que tem 10 itens em estoque para QUALQUER produto
+        when(estoqueRepositoryMock.getQuantidade(any(Produto.class))).thenReturn(10);
+
+        //Dizemos ao mock do Frete para fingir que o frete para este CEP é R$ 25.0
+        when(freteAPIMock.calcularFrete(cep)).thenReturn(25.0);
+
+        //Tentamos fechar a compra
+        Pedido pedido = service.fecharCompra(carrinho, cep);
+
+        assertNotNull(pedido); //O pedido foi criado
+        assertEquals(2, pedido.getItens().size());
+        assertEquals(200.0, pedido.getSubtotal()); //Subtotal (sem promoção)
+        assertEquals(25.0, pedido.getFrete()); //Frete mockado
+        assertEquals(225.0, pedido.getTotalFinal()); //Total
+
+        //Verifica se os mocks foram chamados
+        //Queremos garantir que o serviço realmente tentou reservar os 2 itens
+        verify(estoqueRepositoryMock, times(2)).reservar(any(Produto.class), eq(1));
     }
 }

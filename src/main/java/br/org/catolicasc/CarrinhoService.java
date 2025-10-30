@@ -33,4 +33,37 @@ public class CarrinhoService {
 
         return totalBruto;
     }
+
+    public Pedido fecharCompra(Carrinho carrinho, String cep) {
+        if (carrinho == null) {
+            throw new IllegalArgumentException("Carrinho não pode ser nulo");
+        }
+        if (carrinho.getItens().isEmpty()) {
+            throw new IllegalArgumentException("Carrinho não pode estar vazio");
+        }
+
+        //Verifica o estoque para cada item (Regra de Negócio)
+        for (Produto p : carrinho.getItens()) {
+            int quantidadeNoCarrinho = 1; //Para simplificar considera 1 de cada
+            int estoqueDisponivel = estoqueRepository.getQuantidade(p);
+
+            if (estoqueDisponivel < quantidadeNoCarrinho) {
+                throw new IllegalStateException("Estoque insuficiente para " + p.getNome());
+            }
+        }
+
+        //Calcula o subtotal (regras de promoção)
+        double subtotal = this.calcularTotal(carrinho);
+
+        //Calcula o frete (dependência externa mockada)
+        double frete = freteAPI.calcularFrete(cep);
+
+        //Reserva os itens no estoque (dependência externa mockada)
+        for (Produto p : carrinho.getItens()) {
+            estoqueRepository.reservar(p, 1);
+        }
+
+        //Cria e retorna o Pedido
+        return new Pedido(carrinho.getItens(), subtotal, frete);
+    }
 }
