@@ -85,4 +85,27 @@ public class CarrinhoServiceTest {
         //Queremos garantir que o serviço realmente tentou reservar os 2 itens
         verify(estoqueRepositoryMock, times(2)).reservar(any(Produto.class), eq(1));
     }
+
+    @Test
+    void deveLancarExcecao_QuandoFecharCompra_ComEstoqueInsuficiente() {
+        //Configura um carrinho com 1 item
+        Produto p1 = new Produto("Produto A", 100.0);
+        Carrinho carrinho = new Carrinho();
+        carrinho.adicionarItem(p1);
+        String cep = "89250-000";
+
+        //Dizemos ao mock do Estoque para fingir que tem 0 itens em estoque
+        when(estoqueRepositoryMock.getQuantidade(p1)).thenReturn(0);
+
+        //Verificamos se o serviço lança a exceção correta
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            service.fecharCompra(carrinho, cep);
+        });
+
+        //Verifica se a mensagem de erro está correta
+        assertEquals("Estoque insuficiente para Produto A", exception.getMessage());
+
+        //Verifica que o 'reservar' nunca foi chamado
+        verify(estoqueRepositoryMock, never()).reservar(any(), anyInt());
+    }
 }
