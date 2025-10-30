@@ -1,5 +1,8 @@
 package br.org.catolicasc;
 
+import java.time.Duration;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,5 +140,31 @@ public class CarrinhoServiceTest {
 
         //O estoque de p1 deve ter diminuído de 20 para 19.
         assertEquals(19, estoqueStub.getQuantidade(p1));
+    }
+
+    @Test
+    void deveFecharCompraRapidamente_TesteDePerformance() {
+        //Configura um cenário real, usando o Stub (sem mocks lentos)
+        InMemoryEstoqueRepository estoqueStub = new InMemoryEstoqueRepository();
+        CarrinhoService serviceComStub = new CarrinhoService(estoqueStub, freteAPIMock);
+
+        //Prepara os dados
+        Produto p1 = new Produto("Produto A", 10.0);
+        estoqueStub.adicionarProduto(p1, 100); //Adiciona 100 no estoque
+        Carrinho carrinho = new Carrinho();
+        carrinho.adicionarItem(p1);
+        String cep = "89250-000";
+
+        //Configura o mock de frete
+        when(freteAPIMock.calcularFrete(cep)).thenReturn(5.0);
+
+        //Define um limite de 200 milissegundos
+        Duration timeout = Duration.ofMillis(200);
+
+        //O assertTimeout roda o código () -> e falha se ele demorar mais que o 'timeout'
+        assertTimeout(timeout, () -> {
+            //Este é o código que está sendo medido
+            serviceComStub.fecharCompra(carrinho, cep);
+        }, "A execução do fecharCompra demorou mais que 200ms!"); //Mensagem de falha
     }
 }
