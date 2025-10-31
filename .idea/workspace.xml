@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef19c776-6ddf-4e80-8f77-bd81e7cd406c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/br/org/catolicasc/InMemoryEstoqueRepositoryContractTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/br/org/catolicasc/CarrinhoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/org/catolicasc/CarrinhoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/br/org/catolicasc/CarrinhoServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/br/org/catolicasc/CarrinhoServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,10 +48,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.CarrinhoServiceTest.deveAplicarDescontoDoCupom_AposPromocao.executor": "Run",
+    "JUnit.CarrinhoServiceTest.deveAplicarPromocaoProgressivaEOCupom.executor": "Run",
     "JUnit.CarrinhoServiceTest.executor": "Run",
     "JUnit.InMemoryEstoqueRepositoryContractTest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
@@ -83,6 +84,38 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="CarrinhoServiceTest.deveAplicarDescontoDoCupom_AposPromocao" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="n2-teste-software" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="br.org.catolicasc.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="br.org.catolicasc" />
+      <option name="MAIN_CLASS_NAME" value="br.org.catolicasc.CarrinhoServiceTest" />
+      <option name="METHOD_NAME" value="deveAplicarDescontoDoCupom_AposPromocao(java.lang.String,double)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CarrinhoServiceTest.deveAplicarPromocaoProgressivaEOCupom" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="n2-teste-software" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="br.org.catolicasc.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="br.org.catolicasc" />
+      <option name="MAIN_CLASS_NAME" value="br.org.catolicasc.CarrinhoServiceTest" />
+      <option name="METHOD_NAME" value="deveAplicarPromocaoProgressivaEOCupom" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="InMemoryEstoqueRepositoryContractTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="n2-teste-software" />
       <extension name="coverage">
@@ -102,6 +135,8 @@
       <list>
         <item itemvalue="JUnit.InMemoryEstoqueRepositoryContractTest" />
         <item itemvalue="JUnit.CarrinhoServiceTest" />
+        <item itemvalue="JUnit.CarrinhoServiceTest.deveAplicarPromocaoProgressivaEOCupom" />
+        <item itemvalue="JUnit.CarrinhoServiceTest.deveAplicarDescontoDoCupom_AposPromocao" />
       </list>
     </recent_temporary>
   </component>
@@ -120,7 +155,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1761878949245</updated>
-      <workItem from="1761878952625" duration="807000" />
+      <workItem from="1761878952625" duration="2351000" />
     </task>
     <servers />
   </component>

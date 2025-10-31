@@ -14,7 +14,7 @@ O pipeline de CI deste projeto, executando todos os testes e gerando o relatóri
 * Apache Maven
 
 ### Executando os Testes e Cobertura
-Para executar todos os testes (9 testes no total) e gerar o relatório de cobertura (JaCoCo), execute o seguinte comando Maven na raiz do projeto:
+Para executar todos os testes (18 testes no total) e gerar o relatório de cobertura (JaCoCo), execute o seguinte comando Maven na raiz do projeto:
 
 ```bash
   mvn verify
@@ -40,6 +40,8 @@ Todos os testes de unidade e integração estão na classe br.org.catolicasc.Car
 
 ### Testes de Regra (Item 4: Parametrizado):
 * deveCalcularTotalCorretamenteParaDiferentesQuantidades: Utiliza @ParameterizedTest e @CsvSource para validar a regra de promoção progressiva  em múltiplos cenários (0 itens, 2 itens [sem desconto], 3 itens [com desconto], 5 itens [com desconto]).
+* deveAplicarDescontoDoCupom_AposPromocao: Valida a regra de cupom  (DEZ, VINTE, INVALIDO) após o cálculo da promoção.
+* deveAplicarPromocaoProgressivaEOCupom: Valida a interação das duas regras de desconto (promoção + cupom).
 
 ### Testes de Exceção (Item 3):
 * deveLancarExcecaoQuandoCarrinhoForNulo: Valida o tratamento de entradas nulas (IllegalArgumentException).
@@ -59,5 +61,3 @@ O projeto implementa o bônus de Teste de Contrato. A classe `InMemoryEstoqueRep
 ## 4. Limites Conhecidos
 * Quantidade de Itens: Para simplificar, o sistema trata cada item no carrinho como "quantidade 1". A lógica de fecharCompra e InMemoryEstoqueRepository precisaria ser adaptada para suportar um Carrinho com 5 unidades do "Produto A", por exemplo
 * Persistência: O InMemoryEstoqueRepository é um stub volátil e não persiste dados.
-* Regras de Negócio: O trabalho foca na "promoção progressiva" e "reserva de estoque". A regra de "cupom"  não foi implementada.
-

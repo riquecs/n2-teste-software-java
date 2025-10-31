@@ -2,7 +2,7 @@ package br.org.catolicasc;
 
 public class CarrinhoService {
 
-    private static final int MIN_ITENS_PARA_PROMOCAO = 3;
+    private static final int MIN_ITEMS_PARA_PROMOCAO = 3;
     private static final double PERCENTUAL_DESCONTO_PROMOCAO = 0.10; // 10%
 
     private final EstoqueRepository estoqueRepository;
@@ -13,28 +13,36 @@ public class CarrinhoService {
         this.freteAPI = freteAPI;
     }
 
-    public double calcularTotal(Carrinho carrinho) {
+    public double calcularTotal(Carrinho carrinho, String cupom) {
 
-        //Adicionamos esta verificação de argumento inválido
         if (carrinho == null) {
             throw new IllegalArgumentException("Carrinho não pode ser nulo");
         }
 
-        double totalBruto = 0.0;
+        double subtotal = 0.0;
         for (Produto p : carrinho.getItens()) {
-            totalBruto += p.getPreco();
+            subtotal += p.getPreco();
         }
 
-        //Usando as constantes
-        if (carrinho.getQuantidadeItens() >= MIN_ITENS_PARA_PROMOCAO) {
-            double desconto = totalBruto * PERCENTUAL_DESCONTO_PROMOCAO;
-            return totalBruto - desconto;
+        if (carrinho.getQuantidadeItens() >= MIN_ITEMS_PARA_PROMOCAO) {
+            double desconto = subtotal * PERCENTUAL_DESCONTO_PROMOCAO;
+            subtotal = subtotal - desconto;
         }
 
-        return totalBruto;
+        double descontoCupom = 0.0;
+        if (cupom != null) {
+            if (cupom.equals("DEZ")) {
+                descontoCupom = subtotal * 0.10; //10%
+            } else if (cupom.equals("VINTE")) {
+                descontoCupom = subtotal * 0.20; //20%
+            }
+        }
+
+        //Retorna o subtotal (com promoção) MENOS o desconto do cupom
+        return subtotal - descontoCupom;
     }
 
-    public Pedido fecharCompra(Carrinho carrinho, String cep) {
+    public Pedido fecharCompra(Carrinho carrinho, String cep, String cupom) {
         if (carrinho == null) {
             throw new IllegalArgumentException("Carrinho não pode ser nulo");
         }
@@ -53,7 +61,7 @@ public class CarrinhoService {
         }
 
         //Calcula o subtotal (regras de promoção)
-        double subtotal = this.calcularTotal(carrinho);
+        double subtotal = this.calcularTotal(carrinho, cupom);
 
         //Calcula o frete (dependência externa mockada)
         double frete = freteAPI.calcularFrete(cep);

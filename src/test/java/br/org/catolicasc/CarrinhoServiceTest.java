@@ -38,7 +38,7 @@ public class CarrinhoServiceTest {
     @Test
     void deveLancarExcecaoQuandoCarrinhoForNulo() {
         assertThrows(IllegalArgumentException.class, () -> {
-            service.calcularTotal(null);
+            service.calcularTotal(null, null);
         });
     }
 
@@ -54,7 +54,7 @@ public class CarrinhoServiceTest {
         for (int i = 0; i < quantidadeItens; i++) {
             carrinho.adicionarItem(new Produto("Item", precoItem));
         }
-        double totalCalculado = service.calcularTotal(carrinho);
+        double totalCalculado = service.calcularTotal(carrinho, null);
         assertEquals(totalEsperado, totalCalculado, 0.001);
     }
 
@@ -76,7 +76,7 @@ public class CarrinhoServiceTest {
         when(freteAPIMock.calcularFrete(cep)).thenReturn(25.0);
 
         //Tentamos fechar a compra
-        Pedido pedido = service.fecharCompra(carrinho, cep);
+        Pedido pedido = service.fecharCompra(carrinho, cep, null);
 
         assertNotNull(pedido); //O pedido foi criado
         assertEquals(2, pedido.getItens().size());
@@ -102,7 +102,7 @@ public class CarrinhoServiceTest {
 
         //Verificamos se o serviço lança a exceção correta
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            service.fecharCompra(carrinho, cep);
+            service.fecharCompra(carrinho, cep, null);
         });
 
         //Verifica se a mensagem de erro está correta
@@ -131,7 +131,7 @@ public class CarrinhoServiceTest {
         //Configura o mock do Frete
         when(freteAPIMock.calcularFrete(cep)).thenReturn(10.0);
 
-        Pedido pedido = serviceComStub.fecharCompra(carrinho, cep);
+        Pedido pedido = serviceComStub.fecharCompra(carrinho, cep, null);
 
         assertNotNull(pedido);
         assertEquals(100.0, pedido.getSubtotal());
@@ -164,7 +164,47 @@ public class CarrinhoServiceTest {
         //O assertTimeout roda o código () -> e falha se ele demorar mais que o 'timeout'
         assertTimeout(timeout, () -> {
             //Este é o código que está sendo medido
-            serviceComStub.fecharCompra(carrinho, cep);
+            serviceComStub.fecharCompra(carrinho, cep, null);
         }, "A execução do fecharCompra demorou mais que 200ms!"); //Mensagem de falha
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            //cupom, subtotalEsperado
+            "'DEZ', 90.0",     //2 itens = R$100. (sem promo) -> Cupom 10% = R$90
+            "'VINTE', 80.0",    //2 itens = R$100. (sem promo) -> Cupom 20% = R$80
+            "'INVALIDO', 100.0",  //2 itens = R$100. (sem promo) -> Cupom invalido = R$100
+            "null, 100.0"       //2 itens = R$100. (sem promo) -> Cupom nulo = R$100
+    })
+    void deveAplicarDescontoDoCupom_AposPromocao(String cupom, double totalEsperado) {
+        //Usamos 2 itens para NÃO ativar a promoção progressiva
+        Carrinho carrinho = new Carrinho();
+        carrinho.adicionarItem(new Produto("Item A", 50.0));
+        carrinho.adicionarItem(new Produto("Item B", 50.0)); //Subtotal = R$100
+
+        //Passamos o cupom da vez
+        double totalCalculado = service.calcularTotal(carrinho, cupom);
+
+        assertEquals(totalEsperado, totalCalculado, 0.001);
+    }
+
+    @Test
+    void deveAplicarPromocaoProgressivaEOCupom() {
+        //Usamos 3 itens para ATIVAR a promoção progressiva
+        Carrinho carrinho = new Carrinho();
+        carrinho.adicionarItem(new Produto("Item A", 50.0));
+        carrinho.adicionarItem(new Produto("Item B", 50.0));
+        carrinho.adicionarItem(new Produto("Item C", 50.0)); //Total bruto = R$150
+
+        //Promoção progressiva (10%) = R$135.0
+        //Cupom 'DEZ' (10%) sobre R$135 = R$13.5
+        //Total esperado = R$121.5
+
+        String cupom = "DEZ";
+        double totalEsperado = 121.5;
+
+        double totalCalculado = service.calcularTotal(carrinho, cupom);
+
+        assertEquals(totalEsperado, totalCalculado, 0.001);
     }
 }
