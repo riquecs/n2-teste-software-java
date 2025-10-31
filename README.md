@@ -52,6 +52,10 @@ Todos os testes de unidade e integração estão na classe br.org.catolicasc.Car
 ### Teste de Performance (Item 7):
 * deveFecharCompraRapidamente_TesteDePerformance: Utiliza assertTimeout  para garantir que o fluxo de compra seja executado dentro do limite de 200ms.
 
+---
+## Bônus: Teste de Contrato
+O projeto implementa o bônus de Teste de Contrato. A classe `InMemoryEstoqueRepositoryContractTest` define e valida o 'contrato' da interface `EstoqueRepository`, garantindo que nossa implementação `InMemoryEstoqueRepository` se comporta como esperado (manipulando o estoque e lançando exceções corretamente).
+
 ## 4. Limites Conhecidos
 * Quantidade de Itens: Para simplificar, o sistema trata cada item no carrinho como "quantidade 1". A lógica de fecharCompra e InMemoryEstoqueRepository precisaria ser adaptada para suportar um Carrinho com 5 unidades do "Produto A", por exemplo
 * Persistência: O InMemoryEstoqueRepository é um stub volátil e não persiste dados.
